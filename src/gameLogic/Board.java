@@ -1,10 +1,7 @@
 package gameLogic;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 /**
- * Created by kuba on 16.06.17.
+ * Used to manage game board.
  */
 public class Board {
     private boolean[] board;
@@ -15,10 +12,19 @@ public class Board {
     private char deadStateChar;
     private char aliveStateChar;
 
+    /**Creates new Board with specified size.
+     *
+     */
     public Board(int x, int y) {
         this(x, y, 'x', '.');
     }
 
+    /**Creates new Board with specified size and characters indicating state of cell.
+     * @param x
+     * @param y
+     * @param aliveStateChar Char representing living cell.
+     * @param deadStateChar Char representing dead cell.
+     */
     public Board(int x, int y, char aliveStateChar, char deadStateChar) {
         this.generation = 0;
         this.xSize = x;
@@ -33,22 +39,34 @@ public class Board {
         this.nextBoardState = new boolean[x * y];
     }
 
+    /**Gets current cell generation
+     *
+     */
     public int getGeneration() {
         return generation;
     }
 
+    /**Sets cell state at specified position.
+     *
+     */
     public void setCellState(int x, int y, boolean state) {
         if (!cellExists(x, y)) throw new ArrayIndexOutOfBoundsException();
 
         this.board[getIndexFromCoords(x, y)] = state;
     }
 
+    /**Gets cell state at specified position.
+     *
+     */
     public boolean getCellState(int x, int y) {
         if (!cellExists(x, y)) throw new ArrayIndexOutOfBoundsException();
 
         return this.board[getIndexFromCoords(x, y)];
     }
 
+    /**Apply rules to board and tick forward.
+     *
+     */
     public void tick() {
         for (int i = 0; i < ySize; i++) {
             for (int j = 0; j < xSize; j++) {
@@ -63,15 +81,24 @@ public class Board {
         generation++;
     }
 
+    /**Checks if cell exist at specified position.
+     *
+     */
     private boolean cellExists(int x, int y) {
         return (x * y < this.board.length - 1) && (x >= 0 && x < xSize) && (y >= 0 && y < ySize);
     }
 
+    /**Gets array index from coordinates.
+     *
+     */
     private int getIndexFromCoords(int x, int y) {
         if (cellExists(x, y)) return x + y * this.xSize;
         else throw new ArrayIndexOutOfBoundsException();
     }
 
+    /**Count living cell neighbours.
+     *
+     */
     private int countAliveNeighbours(int x, int y) {
         int alive = 0;
         for (int i = 0; i < 3; i++) { //neighbourhood of cell -> 3x3
@@ -83,12 +110,18 @@ public class Board {
         return alive;
     }
 
+    /**Defines new state of specified cell.
+     *
+     */
     private boolean getStateFromRules(boolean cellState, int numberOfAliveNeighbours) {
         if (cellState && (numberOfAliveNeighbours == 2 || numberOfAliveNeighbours == 3)) return true;
         if (!cellState && numberOfAliveNeighbours == 3) return true;
         return false;
     }
 
+    /**Checks new state of cell according to rules.
+     *
+     */
     private boolean checkNextState(int x, int y) {
         return getStateFromRules(getCellState(x, y), countAliveNeighbours(x, y));
     }
