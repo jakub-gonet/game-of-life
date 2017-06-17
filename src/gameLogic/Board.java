@@ -4,6 +4,8 @@ package gameLogic;
  * Used to manage game board.
  */
 public class Board {
+
+
     private boolean[] board;
     private boolean[] nextBoardState;
     private int generation;
@@ -17,6 +19,13 @@ public class Board {
      */
     public Board(int x, int y) {
         this(x, y, 'x', '.');
+    }
+
+    /**Gets board.
+     * @return
+     */
+    public boolean[] getBoard() {
+        return board;
     }
 
     /**Creates new Board with specified size and characters indicating state of cell.
